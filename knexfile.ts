@@ -1,13 +1,12 @@
-// Update with your config settings.
-
-/**
- * @type { Object.<string, import("knex").Knex.Config> }
- */
-
 import 'dotenv/config'
-import path from 'path'
-import { Knex } from 'knex'
+import type { Knex } from "knex";
+import { join } from 'path';
+import { fileURLToPath } from 'url';
+import path from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// Update with your config settings.
 
 const {
   DATABASE_URL = "postgresql://postgres@localhost/postgres",
@@ -17,52 +16,50 @@ const {
   DEBUG,
 } = process.env;
 
-
-export type ConfigOptions = {
-  [key: string] : Knex.Config
-}
-
-export const config : ConfigOptions = {
-
-  development : {
-    client: 'sqlite3',
-    connection: DATABASE_URL_DEVELOPMENT,
-    migrations: {
-      directory: path.join(__dirname, "src", "db", "migrations"),
-    },
-    seeds: {
-      directory: path.join(__dirname, "src", "db", "seeds"),
-    }
+const config: { [key: string]: Knex.Config } = {
+  development: {
+    client: 'postgresql',
+  connection: DATABASE_URL_DEVELOPMENT,
+  migrations: {
+    directory: join(__dirname, "src", "db", "migrations"),
+  },
+  seeds: {
+    directory: join(__dirname, "src", "db", "seeds"),
+  }
   },
 
   staging: {
-    client: 'postgresql',
-    connection: DATABASE_URL_PREVIEW,
+    client: "postgresql",
+    connection: {
+      database: "my_db",
+      user: "username",
+      password: "password"
+    },
     pool: {
       min: 2,
       max: 10
     },
     migrations: {
-      directory: path.join(__dirname, "src", "db", "migrations"),
-    },
-    seeds: {
-      directory: path.join(__dirname, "src", "db", "seeds"),
+      tableName: "knex_migrations"
     }
   },
 
   production: {
-    client: 'postgresql',
-    connection: DATABASE_URL,
+    client: "postgresql",
+    connection: {
+      database: "my_db",
+      user: "username",
+      password: "password"
+    },
     pool: {
       min: 2,
       max: 10
     },
     migrations: {
-      directory: path.join(__dirname, "src", "db", "migrations"),
-    },
-    seeds: {
-      directory: path.join(__dirname, "src", "db", "seeds"),
+      tableName: "knex_migrations"
     }
   }
 
 };
+
+export default config

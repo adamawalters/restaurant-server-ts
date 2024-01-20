@@ -1,13 +1,15 @@
+//require('ts-node').register()
 import { Knex } from "knex";
-
-exports.up = function(knex: Knex) {
+const up = function(knex: Knex) {
     return knex.schema.table("reservations", (table) => {
         table.string("status").notNullable().defaultTo("booked"); 
     })
 };
 
-exports.down = function(knex: Knex) {
+const down = function(knex: Knex) {
     return knex.schema.table("reservations", (table) => {
         table.dropColumn("status");
     })
 }
+
+export {up, down}

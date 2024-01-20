@@ -1,6 +1,7 @@
+//require('ts-node').register()
 import { Knex } from "knex";
 
-exports.up = async function (knex: Knex) {
+const up = async function (knex: Knex) {
     await knex.schema.createTable("tables", (table) => {
       table.increments("table_id").primary();
       table.string("table_name").notNullable();
@@ -15,6 +16,8 @@ exports.up = async function (knex: Knex) {
 
   };
   
-  exports.down = function (knex: Knex) {
+  const down = function (knex: Knex) {
     return knex.schema.dropTable("tables");
   };
+
+  export {up, down}

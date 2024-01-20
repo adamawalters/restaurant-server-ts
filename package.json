@@ -10,7 +10,9 @@
     "start": "node dist/index.js",
     "dev": "nodemon",
     "dev-server": "nodemon --exec ts-node src/server.ts",
-    "knex:migrate:latest" : "knex ts-node --esm migrate:latest"
+    "knex:migrate:latest" : "cd dist && npx knex migrate:latest",
+    "api-knex": "TS_NODE_COMPILER_OPTIONS='{ \"module\": \"commonjs\" }' knex --knexfile=./knexfile.ts",
+    "migrate": "node --loader ts-node/esm ./node_modules/.bin/knex  migrate:latest"
   },
   "keywords": [],
   "author": "",
