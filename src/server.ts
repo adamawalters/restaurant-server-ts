@@ -3,6 +3,7 @@ const { PORT = 5001 } = process.env;
 import app from "./app";
 import knex from "./db/connection";
 
+
 knex.migrate
   .latest()
   .then((migrations) => {
@@ -13,8 +14,6 @@ knex.migrate
     console.error(error);
     knex.destroy();
   }); 
-
-  app.listen(PORT, listener)
 
 function listener() {
   console.log(`Listening on Port ${PORT}!`);
