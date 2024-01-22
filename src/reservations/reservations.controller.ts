@@ -253,8 +253,8 @@ const statusIsFinished: RequestHandler = async (req, res, next) => {
 };
 
 const bodyHasStatusProperty: RequestHandler = (req, res, next) => {
-  const { data = {} } = req.body as StatusUpdateRequestBody;
-  if (!data["status"]) {
+  const { data } = req.body as StatusUpdateRequestBody;
+  if (!data || !data["status"]) {
     return next({
       status: 400,
       message: `Body needs a status property.`,
@@ -268,7 +268,7 @@ const bodyHasStatusProperty: RequestHandler = (req, res, next) => {
 
   const reservationStatusIsValid: RequestHandler = async (req, res, next) => {
     const {
-      data: { status },
+      data: { status }
     } = <StatusUpdateRequestBody>req.body;
     if (!validReservationStatuses.includes(status)) {
       return next({

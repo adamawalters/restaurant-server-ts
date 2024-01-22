@@ -2,30 +2,45 @@
  * List handler for table resources
  */
 
-import service from "./tables.service"
-import asyncErrorBoundary from "../errors/asyncErrorBoundary"
+import service from "./tables.service";
+import asyncErrorBoundary from "../errors/asyncErrorBoundary";
 import { RequestHandler } from "express";
+import { UpdateReservationBody } from "../reservations/reservations.controller";
 
+/* Interfaces */
+
+export interface FullTable {
+  table_id: string;
+  table_name: string;
+  capacity: number;
+  reservation_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateTable {
+  table_name: string;
+  capacity: number;
+}
 
 const list: RequestHandler = async (req, res) => {
-
-  const {available} = req.query;
+  const { available } = req.query;
   if (available === "true") {
     res.json({
       data: await service.listAvailable(),
-    }); 
+    });
   } else {
     res.json({
       data: await service.list(),
     });
   }
-}
+};
 
 const create: RequestHandler = async (req, res) => {
   const { data } = res.locals;
   const response = await service.create(data);
   res.status(201).json({ data: response, otherkey: "other!" });
-}
+};
 
 const update: RequestHandler = async (req, res) => {
   const { data } = res.locals;
@@ -34,22 +49,24 @@ const update: RequestHandler = async (req, res) => {
   const response = await service.update(data.reservation_id, table.table_id);
 
   res.json({ data: response });
-}
-
+};
 
 const deleteReservation: RequestHandler = async (req, res) => {
-  const {table} = res.locals;
-  const response = await service.deleteReservation(table.table_id, table.reservation_id);
-  res.json({data : response});  
-}
+  const { table } = res.locals;
+  const response = await service.deleteReservation(
+    table.table_id,
+    table.reservation_id
+  );
+  res.json({ data: response });
+};
 
 /*Validation functions  */
 
 const requiredProperties: string[] = ["table_name", "capacity"];
 const requiredReservationProperties: string[] = ["reservation_id"];
 
-function bodyHasRequiredProperties(propertiesList) {
-  const checker: RequestHandler =  (req, res, next) => {
+function bodyHasRequiredProperties(propertiesList: string[]) {
+  const checker: RequestHandler = (req, res, next) => {
     const { data = {} } = req.body;
 
     propertiesList.forEach((property) => {
@@ -69,20 +86,25 @@ function bodyHasRequiredProperties(propertiesList) {
   return checker;
 }
 
-
 const tableCapacityIsANumber: RequestHandler = (req, res, next) => {
-  const {data : {capacity}} = res.locals;
-  if(typeof capacity !== "number" || isNaN(capacity)){
+  const {
+    data: { capacity },
+  } = res.locals;
+  if (typeof capacity !== "number" || isNaN(capacity)) {
     return next({
       status: 400,
-      message: `capacity must be a number.`
-    })
+      message: `capacity must be a number.`,
+    });
   }
 
   next();
-}
+};
 
-const tableExists: RequestHandler = async (req, res, next) => {
+const tableExists: RequestHandler<{ table_id: string }> = async (
+  req,
+  res,
+  next
+) => {
   const { table_id } = req.params;
 
   const response = await service.read(table_id);
@@ -96,12 +118,10 @@ const tableExists: RequestHandler = async (req, res, next) => {
     status: 404,
     message: `table_id ${table_id} not found.`,
   });
-}
+};
 
 const reservationExists: RequestHandler = async (req, res, next) => {
-  const {
-    data: { reservation_id },
-  } = res.locals;
+  const { reservation_id } = res.locals.data as UpdateReservationBody;
   const response = await service.readReservation(reservation_id);
 
   if (response) {
@@ -113,10 +133,10 @@ const reservationExists: RequestHandler = async (req, res, next) => {
     status: 404,
     message: `Reservation ${reservation_id} does not exist.`,
   });
-}
+};
 
 const tableIsOccupied: RequestHandler = (req, res, next) => {
-  const { table } = res.locals;
+  const table = res.locals.table as FullTable;
 
   if (!table.reservation_id) {
     return next({
@@ -126,12 +146,11 @@ const tableIsOccupied: RequestHandler = (req, res, next) => {
   }
 
   next();
-
-}
+};
 
 const tableSeatsReservation: RequestHandler = (req, res, next) => {
-  const { table } = res.locals;
-  const { reservation } = res.locals;
+  const table = res.locals.table as FullTable;
+  const reservation = res.locals.reservation as UpdateReservationBody;
 
   if (reservation.people > table.capacity) {
     return next({
@@ -141,10 +160,10 @@ const tableSeatsReservation: RequestHandler = (req, res, next) => {
   }
 
   next();
-}
+};
 
 const tableIsUnoccupied: RequestHandler = async (req, res, next) => {
-  const { table } = res.locals;
+  const table = res.locals.table as FullTable;
 
   if (table.reservation_id) {
     return next({
@@ -154,12 +173,10 @@ const tableIsUnoccupied: RequestHandler = async (req, res, next) => {
   }
 
   next();
-}
+};
 
 const tableNameIsTwoCharsOrMore: RequestHandler = (req, res, next) => {
-  const {
-    data: { table_name },
-  } = res.locals;
+  const { table_name } = res.locals.data as FullTable;
   if (table_name.length < 2) {
     return next({
       status: 400,
@@ -167,12 +184,10 @@ const tableNameIsTwoCharsOrMore: RequestHandler = (req, res, next) => {
     });
   }
   next();
-}
+};
 
 const tableCapacityIsAtLeastOne: RequestHandler = (req, res, next) => {
-  const {
-    data: { capacity },
-  } = res.locals;
+  const { capacity } = res.locals.table as FullTable;
   if (capacity < 1) {
     return next({
       status: 400,
@@ -180,19 +195,19 @@ const tableCapacityIsAtLeastOne: RequestHandler = (req, res, next) => {
     });
   }
   next();
-}
+};
 
 const reservationIsSeated: RequestHandler = (req, res, next) => {
-  const {reservation} = res.locals;
-  if(reservation.status === "seated") {
+  const reservation = res.locals.reservation as UpdateReservationBody;
+  if (reservation.status === "seated") {
     next({
       status: 400,
-      message: `Reservation ${reservation.reservation_id} is already seated.`
-    })
+      message: `Reservation ${reservation.reservation_id} is already seated.`,
+    });
   }
 
   next();
-}
+};
 
 export default {
   list: [asyncErrorBoundary(list)],
@@ -212,5 +227,9 @@ export default {
     reservationIsSeated,
     asyncErrorBoundary(update),
   ],
-  delete: [asyncErrorBoundary(tableExists), tableIsOccupied, asyncErrorBoundary(deleteReservation)],
+  delete: [
+    asyncErrorBoundary(tableExists),
+    tableIsOccupied,
+    asyncErrorBoundary(deleteReservation),
+  ],
 };
