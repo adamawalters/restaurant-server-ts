@@ -2,11 +2,13 @@
  * List handler for reservation resources
  */
 
+
 import service from "./reservations.service";
 import asyncErrorBoundary from "../errors/asyncErrorBoundary";
 import {
   RequestHandler,
 } from "express";
+
 
 /* Constant data */
 
@@ -44,10 +46,6 @@ export interface UpdateReservationBody {
   people: number;
   status: string;
 }
-
-/* type ReqQuery = {
-  query: string
-} */
 
 /*Controller functions */
 

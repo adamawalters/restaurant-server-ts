@@ -17,9 +17,9 @@ const list = async (req, res) => {
     }
 };
 const create = async (req, res) => {
-    const { data } = res.locals;
+    const data = res.locals.data;
     const response = await service.create(data);
-    res.status(201).json({ data: response, otherkey: "other!" });
+    res.status(201).json({ data: response });
 };
 const update = async (req, res) => {
     const { data } = res.locals;
@@ -52,7 +52,7 @@ function bodyHasRequiredProperties(propertiesList) {
     return checker;
 }
 const tableCapacityIsANumber = (req, res, next) => {
-    const { data: { capacity }, } = res.locals;
+    const { capacity } = res.locals.data;
     if (typeof capacity !== "number" || isNaN(capacity)) {
         return next({
             status: 400,
@@ -118,16 +118,16 @@ const tableIsUnoccupied = async (req, res, next) => {
 };
 const tableNameIsTwoCharsOrMore = (req, res, next) => {
     const { table_name } = res.locals.data;
-    if (table_name.length < 2) {
+    if (typeof table_name !== 'string' || table_name.length < 2) {
         return next({
             status: 400,
-            message: `Length of table_name must be at least 2 characters.`,
+            message: `Length of table_name must be a string of at least 2 characters.`,
         });
     }
     next();
 };
 const tableCapacityIsAtLeastOne = (req, res, next) => {
-    const { capacity } = res.locals.table;
+    const { capacity } = res.locals.data;
     if (capacity < 1) {
         return next({
             status: 400,

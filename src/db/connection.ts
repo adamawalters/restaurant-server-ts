@@ -1,4 +1,3 @@
-//import { Knex, knex } from "../../node_modules/knex/types/index";
 import knex, {Knex} from 'knex'
 import KnexFile from "../../knexfile"
 

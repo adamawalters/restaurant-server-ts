@@ -10,9 +10,6 @@ const validReservationStatuses = [
     "finished",
     "cancelled",
 ];
-/* type ReqQuery = {
-  query: string
-} */
 /*Controller functions */
 const list = async (req, res) => {
     const { date, mobile_number } = req.query;
