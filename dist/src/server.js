@@ -1,5 +1,5 @@
 const { PORT = 5001 } = process.env;
-import app from "./app";
+import app from "./app.js";
 import knex from "./db/connection";
 knex.migrate
     .latest()
