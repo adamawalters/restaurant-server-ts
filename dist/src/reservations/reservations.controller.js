@@ -1,8 +1,8 @@
 /**
  * List handler for reservation resources
  */
-import service from "./reservations.service.js";
-import asyncErrorBoundary from "../errors/asyncErrorBoundary.js";
+import service from "./reservations.service";
+import asyncErrorBoundary from "../errors/asyncErrorBoundary";
 /* Constant data */
 const validReservationStatuses = [
     "booked",

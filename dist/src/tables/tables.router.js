@@ -4,7 +4,7 @@
  * @type {Router}
  */
 import express from "express";
-import controller from "./tables.controller.js";
+import controller from "./tables.controller";
 const router = express.Router();
 router.route("/:table_id/seat")
     .put(controller.update)

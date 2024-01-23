@@ -1,4 +1,4 @@
-import knex from "../db/connection.js";
+import knex from "../db/connection";
 async function list() {
     const response = await knex("tables")
         .select("*")

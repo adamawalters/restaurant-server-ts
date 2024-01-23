@@ -1,8 +1,8 @@
 /**
  * List handler for table resources
  */
-import service from "./tables.service.js";
-import asyncErrorBoundary from "../errors/asyncErrorBoundary.js";
+import service from "./tables.service";
+import asyncErrorBoundary from "../errors/asyncErrorBoundary";
 const list = async (req, res) => {
     const { available } = req.query;
     if (available === "true") {

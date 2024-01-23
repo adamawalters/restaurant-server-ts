@@ -1,5 +1,5 @@
 import express from 'express';
-import controller from "./reservations.controller.js";
+import controller from "./reservations.controller";
 const router = express.Router();
 router.route("/:reservation_id/status")
     .put(controller.updateStatus);
