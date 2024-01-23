@@ -1,4 +1,6 @@
-export default function asyncErrorBoundary(delegate, defaultStatus) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function asyncErrorBoundary(delegate, defaultStatus) {
     return (request, response, next) => {
         Promise.resolve()
             .then(() => delegate(request, response, next))
@@ -11,3 +13,4 @@ export default function asyncErrorBoundary(delegate, defaultStatus) {
         });
     };
 }
+exports.default = asyncErrorBoundary;

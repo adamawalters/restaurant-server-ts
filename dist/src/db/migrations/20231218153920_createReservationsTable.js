@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.down = exports.up = void 0;
 const up = async function (knex) {
     await knex.schema.createTable("reservations", (table) => {
         table.increments("reservation_id").primary();
@@ -11,7 +14,8 @@ const up = async function (knex) {
     });
     return knex.schema.raw("alter table reservations add constraint positive_people  check(people > 0)");
 };
+exports.up = up;
 const down = function (knex) {
     return knex.schema.dropTable("reservations");
 };
-export { up, down };
+exports.down = down;

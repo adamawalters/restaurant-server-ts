@@ -3,8 +3,8 @@ import type { Knex } from "knex";
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 import path from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+//const __filename = fileURLToPath(import.meta.url);
+//const __dirname = path.dirname(__filename);
 
 // Update with your config settings.
 

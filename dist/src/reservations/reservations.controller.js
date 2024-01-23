@@ -1,8 +1,13 @@
+"use strict";
 /**
  * List handler for reservation resources
  */
-import service from "./reservations.service";
-import asyncErrorBoundary from "../errors/asyncErrorBoundary";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const reservations_service_1 = __importDefault(require("./reservations.service"));
+const asyncErrorBoundary_1 = __importDefault(require("../errors/asyncErrorBoundary"));
 /* Constant data */
 const validReservationStatuses = [
     "booked",
@@ -14,29 +19,29 @@ const validReservationStatuses = [
 const list = async (req, res) => {
     const { date, mobile_number } = req.query;
     if (mobile_number) {
-        res.json({ data: await service.search(mobile_number) });
+        res.json({ data: await reservations_service_1.default.search(mobile_number) });
     }
     else {
         res.json({
-            data: await service.list(date),
+            data: await reservations_service_1.default.list(date),
         });
     }
 };
 const read = async (req, res) => {
     const { reservation_id } = req.params;
     res.json({
-        data: await service.read(reservation_id),
+        data: await reservations_service_1.default.read(reservation_id),
     });
 };
 const create = async (req, res) => {
     const data = res.locals.data;
-    const response = await service.create(data);
+    const response = await reservations_service_1.default.create(data);
     res.status(201).json({ data: response });
 };
 const updateStatus = async (req, res) => {
     const reservation = res.locals.reservation;
     const { status } = res.locals;
-    const response = await service.updateStatus(reservation.reservation_id, status);
+    const response = await reservations_service_1.default.updateStatus(reservation.reservation_id, status);
     res.json({
         data: response,
     });
@@ -46,7 +51,7 @@ const update = async (req, res) => {
     const reservationFromBody = res.locals.data;
     const newReservation = Object.assign(Object.assign({}, reservationFromBody), { reservation_id: reservationFromDatabase.reservation_id });
     res.json({
-        data: await service.update(reservationFromDatabase.reservation_id, newReservation),
+        data: await reservations_service_1.default.update(reservationFromDatabase.reservation_id, newReservation),
     });
 };
 /*Validation functions  */
@@ -138,7 +143,7 @@ const bodyHasRequiredProperties = (propertiesList) => {
 /* Validations for update status along with reservation exists */
 const reservationExists = async (req, res, next) => {
     const { reservation_id } = req.params;
-    const response = await service.read(reservation_id);
+    const response = await reservations_service_1.default.read(reservation_id);
     if (response) {
         res.locals.reservation = response;
         return next();
@@ -200,8 +205,8 @@ const statusIsNotBooked = async (req, res, next) => {
     }
     next();
 };
-export default {
-    list: [asyncErrorBoundary(list)],
+exports.default = {
+    list: [(0, asyncErrorBoundary_1.default)(list)],
     create: [
         bodyHasRequiredProperties(requiredProperties),
         peoplePropertyIsPositive,
@@ -209,18 +214,18 @@ export default {
         reservationTimeIsValid,
         reservationIsFutureAndRestaurantIsOpen,
         reservationStatusIsValidForCreationEditing,
-        asyncErrorBoundary(create),
+        (0, asyncErrorBoundary_1.default)(create),
     ],
-    read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
+    read: [(0, asyncErrorBoundary_1.default)(reservationExists), (0, asyncErrorBoundary_1.default)(read)],
     updateStatus: [
-        asyncErrorBoundary(reservationExists),
+        (0, asyncErrorBoundary_1.default)(reservationExists),
         bodyHasStatusProperty,
         statusIsFinished,
         reservationStatusIsValid,
-        asyncErrorBoundary(updateStatus),
+        (0, asyncErrorBoundary_1.default)(updateStatus),
     ],
     update: [
-        asyncErrorBoundary(reservationExists),
+        (0, asyncErrorBoundary_1.default)(reservationExists),
         bodyHasRequiredProperties(requiredProperties),
         peoplePropertyIsPositive,
         reservationDateIsValid,
@@ -228,6 +233,6 @@ export default {
         reservationIsFutureAndRestaurantIsOpen,
         reservationStatusIsValidForCreationEditing,
         statusIsNotBooked,
-        asyncErrorBoundary(update),
+        (0, asyncErrorBoundary_1.default)(update),
     ],
 };

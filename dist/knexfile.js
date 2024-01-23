@@ -1,9 +1,9 @@
-import 'dotenv/config';
-import { join } from 'path';
-import { fileURLToPath } from 'url';
-import path from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+require("dotenv/config");
+const path_1 = require("path");
+//const __filename = fileURLToPath(import.meta.url);
+//const __dirname = path.dirname(__filename);
 // Update with your config settings.
 const { DATABASE_URL = "postgresql://postgres@localhost/postgres", DATABASE_URL_DEVELOPMENT = "postgresql://postgres@localhost/postgres", DATABASE_URL_TEST = "postgresql://postgres@localhost/postgres", DATABASE_URL_PREVIEW = "postgresql://postgres@localhost/postgres", DEBUG, } = process.env;
 const config = {
@@ -11,10 +11,10 @@ const config = {
         client: 'postgresql',
         connection: DATABASE_URL_DEVELOPMENT,
         migrations: {
-            directory: join(__dirname, "src", "db", "migrations"),
+            directory: (0, path_1.join)(__dirname, "src", "db", "migrations"),
         },
         seeds: {
-            directory: join(__dirname, "src", "db", "seeds"),
+            directory: (0, path_1.join)(__dirname, "src", "db", "seeds"),
         }
     },
     staging: {
@@ -48,4 +48,4 @@ const config = {
         }
     }
 };
-export default config;
+exports.default = config;

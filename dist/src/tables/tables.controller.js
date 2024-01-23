@@ -1,35 +1,40 @@
+"use strict";
 /**
  * List handler for table resources
  */
-import service from "./tables.service";
-import asyncErrorBoundary from "../errors/asyncErrorBoundary";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const tables_service_1 = __importDefault(require("./tables.service"));
+const asyncErrorBoundary_1 = __importDefault(require("../errors/asyncErrorBoundary"));
 const list = async (req, res) => {
     const { available } = req.query;
     if (available === "true") {
         res.json({
-            data: await service.listAvailable(),
+            data: await tables_service_1.default.listAvailable(),
         });
     }
     else {
         res.json({
-            data: await service.list(),
+            data: await tables_service_1.default.list(),
         });
     }
 };
 const create = async (req, res) => {
     const data = res.locals.data;
-    const response = await service.create(data);
+    const response = await tables_service_1.default.create(data);
     res.status(201).json({ data: response });
 };
 const update = async (req, res) => {
     const { data } = res.locals;
     const { table } = res.locals;
-    const response = await service.update(data.reservation_id, table.table_id);
+    const response = await tables_service_1.default.update(data.reservation_id, table.table_id);
     res.json({ data: response });
 };
 const deleteReservation = async (req, res) => {
     const { table } = res.locals;
-    const response = await service.deleteReservation(table.table_id, table.reservation_id);
+    const response = await tables_service_1.default.deleteReservation(table.table_id, table.reservation_id);
     res.json({ data: response });
 };
 /*Validation functions  */
@@ -63,7 +68,7 @@ const tableCapacityIsANumber = (req, res, next) => {
 };
 const tableExists = async (req, res, next) => {
     const { table_id } = req.params;
-    const response = await service.read(table_id);
+    const response = await tables_service_1.default.read(table_id);
     if (response) {
         res.locals.table = response;
         return next();
@@ -75,7 +80,7 @@ const tableExists = async (req, res, next) => {
 };
 const reservationExists = async (req, res, next) => {
     const { reservation_id } = res.locals.data;
-    const response = await service.readReservation(reservation_id);
+    const response = await tables_service_1.default.readReservation(reservation_id);
     if (response) {
         res.locals.reservation = response;
         return next();
@@ -146,27 +151,27 @@ const reservationIsSeated = (req, res, next) => {
     }
     next();
 };
-export default {
-    list: [asyncErrorBoundary(list)],
+exports.default = {
+    list: [(0, asyncErrorBoundary_1.default)(list)],
     create: [
         bodyHasRequiredProperties(requiredProperties),
         tableNameIsTwoCharsOrMore,
         tableCapacityIsANumber,
         tableCapacityIsAtLeastOne,
-        asyncErrorBoundary(create),
+        (0, asyncErrorBoundary_1.default)(create),
     ],
     update: [
-        asyncErrorBoundary(tableExists),
+        (0, asyncErrorBoundary_1.default)(tableExists),
         bodyHasRequiredProperties(requiredReservationProperties),
-        asyncErrorBoundary(reservationExists),
+        (0, asyncErrorBoundary_1.default)(reservationExists),
         tableSeatsReservation,
         tableIsUnoccupied,
         reservationIsSeated,
-        asyncErrorBoundary(update),
+        (0, asyncErrorBoundary_1.default)(update),
     ],
     delete: [
-        asyncErrorBoundary(tableExists),
+        (0, asyncErrorBoundary_1.default)(tableExists),
         tableIsOccupied,
-        asyncErrorBoundary(deleteReservation),
+        (0, asyncErrorBoundary_1.default)(deleteReservation),
     ],
 };

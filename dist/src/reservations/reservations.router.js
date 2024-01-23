@@ -1,12 +1,17 @@
-import express from 'express';
-import controller from "./reservations.controller";
-const router = express.Router();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const reservations_controller_1 = __importDefault(require("./reservations.controller"));
+const router = express_1.default.Router();
 router.route("/:reservation_id/status")
-    .put(controller.updateStatus);
+    .put(reservations_controller_1.default.updateStatus);
 router.route("/:reservation_id")
-    .get(controller.read)
-    .put(controller.update);
+    .get(reservations_controller_1.default.read)
+    .put(reservations_controller_1.default.update);
 router.route("/")
-    .get(controller.list)
-    .post(controller.create);
-export default router;
+    .get(reservations_controller_1.default.list)
+    .post(reservations_controller_1.default.create);
+exports.default = router;
