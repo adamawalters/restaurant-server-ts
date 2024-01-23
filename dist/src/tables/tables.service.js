@@ -3,7 +3,7 @@ async function list() {
     const response = await knex("tables")
         .select("*")
         .orderBy("table_name");
-    return response[0];
+    return response;
 }
 async function listAvailable() {
     const response = await knex("tables")

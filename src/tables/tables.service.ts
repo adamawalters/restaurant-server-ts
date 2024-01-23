@@ -7,7 +7,7 @@ async function list(){
         .select("*")
         .orderBy("table_name")
 
-    return response[0]
+    return response
 
 }
 

@@ -1,5 +1,7 @@
-export default function asyncErrorBoundary(delegate, defaultStatus?) {
-    return (request, response, next) => {
+import { RequestHandler, Request, Response, NextFunction } from "express-serve-static-core";
+
+export default function asyncErrorBoundary<T>(delegate: RequestHandler<T>, defaultStatus?: string) {
+    return (request: Request<T>, response: Response, next: NextFunction) => {
       Promise.resolve()
         .then(() => delegate(request, response, next))
         .catch((error = {}) => {

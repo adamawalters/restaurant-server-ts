@@ -45,15 +45,16 @@ export interface UpdateReservationBody {
   status: string;
 }
 
+/* type ReqQuery = {
+  query: string
+} */
+
 /*Controller functions */
 
-const list: RequestHandler<
-  {},
-  {},
-  {},
-  { date: string; mobile_number: string }
-> = async (req, res) => {
-  const { date, mobile_number } = req.query;
+
+
+const list: RequestHandler = async (req, res) => {
+  const { date, mobile_number } = req.query as {date: string, mobile_number: string}
 
   if (mobile_number) {
     res.json({ data: await service.search(mobile_number) });
